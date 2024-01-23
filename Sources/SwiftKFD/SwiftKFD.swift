@@ -7,6 +7,7 @@ class deviceInfo {
         case iPadOS
         case macOS
         case watchOS
+        case tvOS
     }
     
     enum KFDType: Int {
@@ -41,6 +42,8 @@ class deviceInfo {
         return .macOS
         #elseif os(watchOS)
         return .watchOS
+        #elseif os(tvOS)
+        return .tvOS
         #else
         return .unknown
         #endif
@@ -71,6 +74,12 @@ class deviceInfo {
                                                                      versionArray.lexicographicallyPrecedes([9, 0, 0])) {
                 return .smith
             } else if versionArray.lexicographicallyPrecedes([10, 0, 0]) {
+                return .landa
+            } else {
+                return .incompatible
+            }
+        } else if deviceType == .tvOS {
+            if versionArray.lexicographicallyPrecedes([17, 3, 0]) {
                 return .landa
             } else {
                 return .incompatible
