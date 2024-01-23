@@ -8,22 +8,6 @@
 #include "offsets.h"
 #include <Foundation/Foundation.h>
 
-#ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
-    #import <UIKit/UIKit.h>
-    #define GET_SYSTEM_VERSION() [[UIDevice currentDevice] systemVersion]
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-    #import <Foundation/Foundation.h>
-    #define GET_SYSTEM_VERSION() [[NSProcessInfo processInfo] operatingSystemVersionString]
-#elif __TVOS_VERSION_MIN_REQUIRED
-    #import <UIKit/UIKit.h>
-    #define GET_SYSTEM_VERSION() [[UIDevice currentDevice] systemVersion]
-#elif __WATCHOS_VERSION_MIN_REQUIRED
-    #import <WatchKit/WatchKit.h>
-    #define GET_SYSTEM_VERSION() [[WKInterfaceDevice currentDevice] systemVersion]
-#else
-    #error Unsupported platform
-#endif
-
 uint32_t off_p_list_le_prev = 0;
 uint32_t off_p_proc_ro = 0;
 uint32_t off_p_ppid = 0;
@@ -115,6 +99,8 @@ uint64_t off_gphysbase = 0;
 uint64_t off_gphysize = 0;
 uint64_t off_gvirtbase = 0;
 uint64_t off_ptov__table = 0;
+
+#define GET_SYSTEM_VERSION() [[NSProcessInfo processInfo] operatingSystemVersionString]
 
 #define SYSTEM_VERSION_EQUAL_TO(v)                 ([GET_SYSTEM_VERSION() compare:v options:NSNumericSearch] == NSOrderedSame)
 #define SYSTEM_VERSION_GREATER_THAN(v)              ([GET_SYSTEM_VERSION() compare:v options:NSNumericSearch] == NSOrderedDescending)
