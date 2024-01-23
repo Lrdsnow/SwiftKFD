@@ -3,7 +3,7 @@ Works on iOS, iPadOS, WatchOS and MacOS!
 
 ## How to use!
 - import SwiftKFD and SwiftKFD_objc
-- run `SmartKopen()` to kopen and `SmartKclose()` to kclose!
+- run `try? SmartKopen()` to kopen and `SmartKclose()` to kclose!
 - Thats all! now you can do all your normal kfd stuff
 
 ## Compatibility:
