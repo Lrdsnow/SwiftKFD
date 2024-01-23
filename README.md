@@ -9,5 +9,5 @@ Works on iOS, iPadOS, TvOS, WatchOS and MacOS!
 ## Compatibility:
 - iOS & iPadOS: 16.6.1 and below
 - WatchOS: 9.0-9.5.1 & 8.8 and below
-- MacOS: 13.4.1 and below
+- MacOS: 13.5.2 and below
 - TvOS: below 17.3

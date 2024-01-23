@@ -61,7 +61,7 @@ class deviceInfo {
                 return .incompatible
             }
         } else if deviceType == .macOS {
-            if versionArray.lexicographicallyPrecedes([13, 4, 1]) {
+            if versionArray.lexicographicallyPrecedes([13, 5, 2]) {
                 return .smith
             } else if versionArray.lexicographicallyPrecedes([14, 0, 0]) {
                 return .landa
