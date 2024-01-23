@@ -7,12 +7,16 @@
 
 #include "offsets.h"
 #include <Foundation/Foundation.h>
+
 #ifdef __IPHONE_OS_VERSION_MIN_REQUIRED
     #import <UIKit/UIKit.h>
     #define GET_SYSTEM_VERSION() [[UIDevice currentDevice] systemVersion]
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
     #import <Foundation/Foundation.h>
     #define GET_SYSTEM_VERSION() [[NSProcessInfo processInfo] operatingSystemVersionString]
+#elif __TVOS_VERSION_MIN_REQUIRED
+    #import <UIKit/UIKit.h>
+    #define GET_SYSTEM_VERSION() [[UIDevice currentDevice] systemVersion]
 #elif __WATCHOS_VERSION_MIN_REQUIRED
     #import <WatchKit/WatchKit.h>
     #define GET_SYSTEM_VERSION() [[WKInterfaceDevice currentDevice] systemVersion]
