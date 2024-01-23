@@ -1,0 +1,13 @@
+module SwiftKFD_objc {
+    header "KFD/bridge.h"
+    header "KFD/fun/fun.h"
+    header "KFD/fun/krw.h"
+    header "KFD/fun/thanks_opa334dev_htrowii.h"
+    header "KFD/fun/vnode.h"
+    header "KFD/fun/utils.h"
+    header "KFD/fun/dir.h"
+    header "KFD/fun/memoryControl.h"
+    header "KFD/fun/mdc/helpers.h"
+    export *
+}
+
