@@ -105,10 +105,13 @@ extension String: LocalizedError {
     public var errorDescription: String? { return self }
 }
 
+var kopened = false
+
 public func SmartKopen(_ puaf_pages: UInt64? = nil, _ puaf_method: UInt64? = nil, _ headroom: Int = -1, _ forcekfd: Bool = false) throws {
     let kfdtype = deviceInfo.getKFDType()
     if kfdtype != .incompatible || forcekfd {
         do_kopen(puaf_pages ?? deviceInfo.getPuafPages(), puaf_method ?? (kfdtype == .smith ? 1 : 2), 1, 1, headroom)
+        kopened = true
     } else {
         throw "Unsupported Version"
     }
@@ -116,5 +119,8 @@ public func SmartKopen(_ puaf_pages: UInt64? = nil, _ puaf_method: UInt64? = nil
 
 public func SmartKclose() {
     // just a proxy to kclose lol
-    do_kclose()
+    if kopened {
+        do_kclose()
+        kopened = false
+    }
 }
