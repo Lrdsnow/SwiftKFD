@@ -17,7 +17,7 @@
     ({                                                                            \
         u64 tmp_buffer = 0;                                                       \
         u64 field_kaddr = (u64)(object_kaddr) + dynamic_info(field_name);         \
-        kread((u64)(kfd), (field_kaddr), (&tmp_buffer), (sizeof(tmp_buffer)));    \
+        kfd_kread((u64)(kfd), (field_kaddr), (&tmp_buffer), (sizeof(tmp_buffer)));    \
         tmp_buffer;                                                               \
     })
 
@@ -25,14 +25,14 @@
     do {                                                                           \
         u64 tmp_buffer = new_value;                                                \
         u64 field_kaddr = (u64)(object_kaddr) + dynamic_info(field_name);          \
-        kwrite((u64)(kfd), (&tmp_buffer), (field_kaddr), (sizeof(tmp_buffer)));    \
+        kfd_kwrite((u64)(kfd), (&tmp_buffer), (field_kaddr), (sizeof(tmp_buffer)));    \
     } while (0)
 
 #define static_kget(object_name, field_name, object_kaddr)                            \
     ({                                                                                \
         u64 tmp_buffer = 0;                                                           \
         u64 field_kaddr = (u64)(object_kaddr) + offsetof(object_name, field_name);    \
-        kread((u64)(kfd), (field_kaddr), (&tmp_buffer), (sizeof(tmp_buffer)));        \
+        kfd_kread((u64)(kfd), (field_kaddr), (&tmp_buffer), (sizeof(tmp_buffer)));        \
         tmp_buffer;                                                                   \
     })
 
@@ -40,7 +40,7 @@
     do {                                                                              \
         u64 tmp_buffer = new_value;                                                   \
         u64 field_kaddr = (u64)(object_kaddr) + offsetof(object_name, field_name);    \
-        kwrite((u64)(kfd), (&tmp_buffer), (field_kaddr), (sizeof(tmp_buffer)));       \
+        kfd_kwrite((u64)(kfd), (&tmp_buffer), (field_kaddr), (sizeof(tmp_buffer)));       \
     } while (0)
 
 const char info_copy_sentinel[] = "p0up0u was here";

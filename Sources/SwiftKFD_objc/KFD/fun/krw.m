@@ -7,6 +7,7 @@
 
 #include "krw.h"
 #include "../libkfd.h"
+#include "../../libkrw.h"
 #include "mdc/helpers.h"
 #import "memoryControl.h"
 #include <os/proc.h>
@@ -95,12 +96,12 @@ void do_kclose(void)
 
 void early_kread(uint64_t kfd, u64 kaddr, void* uaddr, u64 size)
 {
-    kread((struct kfd*)(kfd), kaddr, uaddr, size);
+    kfd_kread((struct kfd*)(kfd), kaddr, uaddr, size);
 }
 
 uint64_t early_kread64(uint64_t kfd, uint64_t where) {
     uint64_t out;
-    kread((struct kfd*)(kfd), where, &out, sizeof(uint64_t));
+    kfd_kread((struct kfd*)(kfd), where, &out, sizeof(uint64_t));
     return out;
 }
 
@@ -132,12 +133,20 @@ void early_kreadbuf(uint64_t kfd, uint64_t kaddr, void* output, size_t size)
 
 void do_kread(u64 kaddr, void* uaddr, u64 size)
 {
-    kread(_kfd, kaddr, uaddr, size);
+    if (_kfd == 0) {
+        kread(kaddr, uaddr, size);
+    } else {
+        kfd_kread(_kfd, kaddr, uaddr, size);
+    }
 }
 
 void do_kwrite(void* uaddr, u64 kaddr, u64 size)
 {
-    kwrite(_kfd, uaddr, kaddr, size);
+    if (_kfd == 0) {
+        kwrite(uaddr, kaddr, size);
+    } else {
+        kfd_kwrite(_kfd, uaddr, kaddr, size);
+    }
 }
 
 uint64_t get_kslide(void) {
@@ -163,22 +172,38 @@ uint64_t get_kerntask(void) {
 
 uint8_t kread8(uint64_t where) {
     uint8_t out;
-    kread(_kfd, where, &out, sizeof(uint8_t));
+    if (_kfd == 0) {
+        kread(where, &out, sizeof(uint8_t));
+    } else {
+        kfd_kread(_kfd, where, &out, sizeof(uint8_t));
+    }
     return out;
 }
 uint32_t kread16(uint64_t where) {
     uint16_t out;
-    kread(_kfd, where, &out, sizeof(uint16_t));
+    if (_kfd == 0) {
+        kread(where, &out, sizeof(uint16_t));
+    } else {
+        kfd_kread(_kfd, where, &out, sizeof(uint16_t));
+    }
     return out;
 }
 uint32_t kread32(uint64_t where) {
     uint32_t out;
-    kread(_kfd, where, &out, sizeof(uint32_t));
+    if (_kfd == 0) {
+        kread(where, &out, sizeof(uint32_t));
+    } else {
+        kfd_kread(_kfd, where, &out, sizeof(uint32_t));
+    }
     return out;
 }
 uint64_t kread64(uint64_t where) {
     uint64_t out;
-    kread(_kfd, where, &out, sizeof(uint64_t));
+    if (_kfd == 0) {
+        kread(where, &out, sizeof(uint64_t));
+    } else {
+        kfd_kread(_kfd, where, &out, sizeof(uint64_t));
+    }
     return out;
 }
 
@@ -200,7 +225,11 @@ void kwrite8(uint64_t where, uint8_t what) {
     _buf[5] = kread8(where+5);
     _buf[6] = kread8(where+6);
     _buf[7] = kread8(where+7);
-    kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
+    if (_kfd == 0) {
+        kwrite(&_buf, where, sizeof(u64));
+    } else {
+        kfd_kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
+    }
 }
 
 void kwrite16(uint64_t where, uint16_t what) {
@@ -209,19 +238,31 @@ void kwrite16(uint64_t where, uint16_t what) {
     _buf[1] = kread16(where+2);
     _buf[2] = kread16(where+4);
     _buf[3] = kread16(where+6);
-    kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
+    if (_kfd == 0) {
+        kwrite(&_buf, where, sizeof(u64));
+    } else {
+        kfd_kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
+    }
 }
 
 void kwrite32(uint64_t where, uint32_t what) {
     u32 _buf[2] = {};
     _buf[0] = what;
     _buf[1] = kread32(where+4);
-    kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
+    if (_kfd == 0) {
+        kwrite(&_buf, where, sizeof(u64));
+    } else {
+        kfd_kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
+    }
 }
 void kwrite64(uint64_t where, uint64_t what) {
     u64 _buf[1] = {};
     _buf[0] = what;
-    kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
+    if (_kfd == 0) {
+        kwrite(&_buf, where, sizeof(u64));
+    } else {
+        kfd_kwrite((u64)(_kfd), &_buf, where, sizeof(u64));
+    }
 }
 
 uint64_t do_vtophys(uint64_t what) {

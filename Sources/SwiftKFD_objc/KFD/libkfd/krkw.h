@@ -172,18 +172,18 @@ void krkw_helper_find_kfd_offsets(struct kfd* kfd) {
         printf("kernel_task: 0x%llx\n", task_kaddr);
         
         uint64_t kerntask_vm_map = 0;
-        kread((u64)kfd, task_kaddr + 0x28, &kerntask_vm_map, sizeof(kerntask_vm_map));
+        kfd_kread((u64)kfd, task_kaddr + 0x28, &kerntask_vm_map, sizeof(kerntask_vm_map));
         kerntask_vm_map = UNSIGN_PTR(kerntask_vm_map);
         printf("kernel_task->vm_map: 0x%llx\n", kerntask_vm_map);
         
         uint64_t kerntask_pmap = 0;
-        kread((u64)kfd, kerntask_vm_map + 0x40, &kerntask_pmap, sizeof(kerntask_pmap));
+        kfd_kread((u64)kfd, kerntask_vm_map + 0x40, &kerntask_pmap, sizeof(kerntask_pmap));
         kerntask_pmap = UNSIGN_PTR(kerntask_pmap);
         printf("kernel_task->vm_map->pmap: 0x%llx\n", kerntask_pmap);
         
         /* Pointer to the root translation table. */ /* translation table entry */
         uint64_t kerntask_tte = 0;
-        kread((u64)kfd, kerntask_pmap, &kerntask_tte, sizeof(kerntask_tte));
+        kfd_kread((u64)kfd, kerntask_pmap, &kerntask_tte, sizeof(kerntask_tte));
         kerntask_tte = UNSIGN_PTR(kerntask_tte);
         printf("kernel_task->vm_map->pmap->tte: 0x%llx\n", kerntask_tte);
         
@@ -193,9 +193,9 @@ void krkw_helper_find_kfd_offsets(struct kfd* kfd) {
         uint64_t kbase = 0;
         while (true) {
             uint64_t val = 0;
-            kread((u64)kfd, kerntask_tte_page, &val, sizeof(val));
+            kfd_kread((u64)kfd, kerntask_tte_page, &val, sizeof(val));
             if(val == 0x100000cfeedfacf) {
-                kread((u64)kfd, kerntask_tte_page + 0x18, &val, sizeof(val));
+                kfd_kread((u64)kfd, kerntask_tte_page + 0x18, &val, sizeof(val));
                 //arm64e: check if mach_header_64->flags, mach_header_64->reserved are all 0
                 //arm64: check if mach_header_64->flags == 0x200001 and mach_header_64->reserved == 0;  0x200001
                 if(val == 0 || val == 0x200001) {
