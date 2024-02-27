@@ -1,6 +1,10 @@
 # Easy to use KFD!
 Works on iOS, iPadOS, TvOS, WatchOS and MacOS!
 
+## libkrw branch
+- make sure to copy libkrw.tbd to your project
+- make sure to build with the flags `-I. -L. -lkrw`
+
 ## How to use!
 - import SwiftKFD and SwiftKFD_objc
 - run `try? SmartKopen()` to kopen and `SmartKclose()` to kclose!
