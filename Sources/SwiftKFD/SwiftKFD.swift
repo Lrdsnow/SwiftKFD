@@ -1,4 +1,7 @@
 import SwiftKFD_objc
+#if os(iOS) || os(iPadOS)
+import UIKit
+#endif
 
 class deviceInfo {
     enum DeviceFamily: Int {
@@ -17,6 +20,18 @@ class deviceInfo {
     }
     
     static func getVersionArray() -> [Int] {
+        #if os(iOS) || os(iPadOS)
+        let systemVersion = UIDevice.current.systemVersion
+        let versionComponents = systemVersion.split(separator: ".").compactMap { Int($0) }
+        if versionComponents.count >= 2 {
+            let major = versionComponents[0]
+            let sub = versionComponents[1]
+            let minor = versionComponents.count >= 3 ? versionComponents[2] : 0
+            return [major, sub, minor]
+        } else {
+            return [99, 0, 0]
+        }
+        #else
         let processInfo = ProcessInfo.processInfo
         let systemVersion = processInfo.operatingSystemVersionString
         let versionComponents = systemVersion.split(separator: ".").compactMap { Int($0) }
@@ -31,6 +46,7 @@ class deviceInfo {
             version[2] = versionComponents[2]
         }
         return version
+        #endif
     }
     
     static func getDeviceType() -> DeviceFamily {
@@ -52,10 +68,10 @@ class deviceInfo {
     static func getKFDType() -> KFDType {
         let deviceType = self.getDeviceType()
         let versionArray = self.getVersionArray()
+        NSLog("\(deviceType)")
+        NSLog("\(versionArray)")
         if deviceType == .iOS || deviceType == .iPadOS {
-            if versionArray.lexicographicallyPrecedes([16, 5, 1]) {
-                return .smith
-            } else if versionArray.lexicographicallyPrecedes([16, 7, 0]) {
+            if versionArray.lexicographicallyPrecedes([16, 7, 0]) {
                 return .landa
             } else {
                 return .incompatible

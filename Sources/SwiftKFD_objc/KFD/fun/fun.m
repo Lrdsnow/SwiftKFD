@@ -257,21 +257,21 @@ uint64_t print_key_value_in_os_dict(uint64_t os_dict) {
 }
 
 
-uint64_t fun_nvram_dump(void) {
-
-    io_registry_entry_t nvram_entry = IORegistryEntryFromPath(kIOMasterPortDefault, kIODeviceTreePlane ":/options");
-    
-    if(nvram_entry != IO_OBJECT_NULL) {
-        printf("[i] nvram_entry: 0x%x\n", nvram_entry);
-
-        uint64_t of_dict = get_of_dict(nvram_entry);
-        printf("[i] of_dict: 0x%llx\n", of_dict);
-        
-        print_key_value_in_os_dict(of_dict);
-    }
-    
-    return 0;
-}
+//uint64_t fun_nvram_dump(void) {
+//
+//    io_registry_entry_t nvram_entry = IORegistryEntryFromPath(kIOMasterPortDefault, kIODeviceTreePlane ":/options");
+//    
+//    if(nvram_entry != IO_OBJECT_NULL) {
+//        printf("[i] nvram_entry: 0x%x\n", nvram_entry);
+//
+//        uint64_t of_dict = get_of_dict(nvram_entry);
+//        printf("[i] of_dict: 0x%llx\n", of_dict);
+//        
+//        print_key_value_in_os_dict(of_dict);
+//    }
+//    
+//    return 0;
+//}
 
 void fix_exploit(void) {
     _offsets_init();
