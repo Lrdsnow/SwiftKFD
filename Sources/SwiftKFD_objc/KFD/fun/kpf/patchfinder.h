@@ -21,7 +21,7 @@ kern_return_t IOObjectRelease(io_object_t object );
 
 io_registry_entry_t IORegistryEntryFromPath(mach_port_t, const io_string_t);
 
-CFTypeRef IORegistryEntryCreateCFProperty(io_registry_entry_t entry, CFStringRef key, CFAllocatorRef allocator, IOOptionBits options);
+CFTypeRef IORegistryEntryCreateCFProperty(io_registry_entry_t entry, CFStringRef key, CFAllocatorRef allocator, uint32_t options);
 
 const char* get_kernversion(void);
 

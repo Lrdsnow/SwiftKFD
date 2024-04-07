@@ -6,6 +6,9 @@
 //
 
 #import <Foundation/Foundation.h>
+
+#if !TARGET_OS_WATCH
+
 #import <dlfcn.h>
 #import <mach-o/dyld.h>
 #import <sys/sysctl.h>
@@ -594,3 +597,5 @@ int test_kttr(void)
     printf("[i] self ucred->posix_cred->cr_uid: %u\n", kread32(cr_posix_p + off_cr_uid));
     return 0;
 }
+
+#endif

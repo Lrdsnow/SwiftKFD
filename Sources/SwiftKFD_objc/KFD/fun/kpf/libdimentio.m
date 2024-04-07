@@ -97,7 +97,7 @@ char* kernel_path = NULL;
 uint64_t kfd = 0;
 
 typedef char io_string_t[512];
-typedef uint32_t IOOptionBits;
+//typedef uint32_t IOOptionBits;
 typedef mach_port_t io_object_t;
 typedef kern_return_t (*kernrw_0_kbase_func_t)(kaddr_t *);
 typedef io_object_t io_service_t, io_connect_t, io_registry_entry_t;

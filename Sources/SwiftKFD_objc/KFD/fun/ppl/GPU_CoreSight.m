@@ -5,6 +5,10 @@
 //
 //
 
+#import <Foundation/Foundation.h>
+
+#if !TARGET_OS_WATCH
+
 //Thanks xina520
 
 #include  <unistd.h>
@@ -12,7 +16,6 @@
 #include  <sys/sysctl.h>
 #include  <pthread/pthread.h>
 #include  <IOSurface/IOSurfaceRef.h>
-#import <Foundation/Foundation.h>
 #include "../krw.h"
 #include "GPU_CoreSight.h"
 #include "../fun.h"
@@ -440,3 +443,5 @@ void  pplwrite_test(void)
     });
     
 }
+
+#endif

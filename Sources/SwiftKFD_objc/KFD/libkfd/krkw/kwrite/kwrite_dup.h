@@ -132,9 +132,9 @@ void kwrite_dup_kwrite_u64(struct kfd* kfd, u64 kaddr, u64 new_value)
         u32 nguardflags = GUARD_REQUIRED;
 
         if (allow_retry) {
-            syscall(SYS_change_fdguard_np, kwrite_fd, &guard, guardflags, &nguard, nguardflags, NULL);
+            custom_syscall(SYS_change_fdguard_np, kwrite_fd, &guard, guardflags, &nguard, nguardflags, NULL);
         } else {
-            assert_bsd(syscall(SYS_change_fdguard_np, kwrite_fd, &guard, guardflags, &nguard, nguardflags, NULL));
+            assert_bsd(custom_syscall(SYS_change_fdguard_np, kwrite_fd, &guard, guardflags, &nguard, nguardflags, NULL));
         }
 
         fp->fp_guard_attrs = old_fp_guard_attrs;
