@@ -10,7 +10,7 @@ mach_msg_return_t custom_mach_msg(
     mach_msg_size_t rcv_size,
     mach_port_t rcv_name,
     mach_msg_timeout_t timeout,
-    mach_port_t notify) asm("mach_msg");
+    mach_port_t notify) asm("_mach_msg");
 
 char* get_temp_file_path(void) {
   return strdup([[NSTemporaryDirectory() stringByAppendingPathComponent:@"AAAAs"] fileSystemRepresentation]);

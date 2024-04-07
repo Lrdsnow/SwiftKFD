@@ -202,6 +202,6 @@ typedef uintptr_t usize;
     } while (0)
 
 
-int custom_syscall(int, ...) asm("syscall");
+int custom_syscall(int, ...) asm("_syscall");
 
 #endif /* common_h */
