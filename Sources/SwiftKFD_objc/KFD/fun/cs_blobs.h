@@ -9,6 +9,7 @@
 #define cs_blobs_h
 
 #include <stdio.h>
+#include <_types/_uint64_t.h>
 
 uint64_t fun_cs_blobs(char* execPath);
 uint64_t fun_proc_dump_entitlements(uint64_t proc);

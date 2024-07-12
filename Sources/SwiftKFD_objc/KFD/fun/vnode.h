@@ -6,6 +6,11 @@
 //
 
 #include <stdio.h>
+#include <_types/_uint64_t.h>
+#include <sys/_types.h>
+typedef __darwin_gid_t  gid_t;
+typedef __darwin_uid_t  uid_t;
+typedef __darwin_mode_t  mode_t;
 
 //https://github.com/apple-oss-distributions/xnu/blob/xnu-8792.41.9/bsd/sys/mount.h#L293
 #define MNT_RDONLY      0x00000001      /* read only filesystem */
