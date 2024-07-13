@@ -5,6 +5,8 @@
 #ifndef static_info_h
 #define static_info_h
 
+#include <TargetConditionals.h>
+
 /*
  * makedefs/MakeInc.def
  */
@@ -555,6 +557,7 @@ struct kqworkloop {
  * bsd/kern/posix_sem.c
  */
 
+#if !TARGET_OS_MAC
 struct pseminfo {
     u32 psem_flags;
     u32 psem_usecount;
@@ -567,6 +570,7 @@ struct pseminfo {
     i32 psem_creator_pid;
     u64 psem_creator_uniqueid;
 };
+#endif
 
 struct psemnode {
     u64 pinfo;
