@@ -557,7 +557,7 @@ struct kqworkloop {
  * bsd/kern/posix_sem.c
  */
 
-#if !TARGET_OS_MAC || TARGET_OS_SIMULATOR
+#if !TARGET_OS_OSX && !TARGET_OS_MACCATALYST && !TARGET_OS_UIKITFORMAC
 struct pseminfo {
     u32 psem_flags;
     u32 psem_usecount;
